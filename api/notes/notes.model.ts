@@ -1,7 +1,16 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
+interface INote {
+  name: string;
+  category: string;
+  date: Date;
+  isActive: Boolean;
+  content: string;
+}
+
 const { Schema, SchemaTypes } = mongoose;
 
-const notesSchema = new Schema({
+const notesSchema = new Schema<INote>({
   name: {
     type: SchemaTypes.String,
     required: true,
@@ -30,5 +39,4 @@ const notesSchema = new Schema({
   },
 });
 
-const notesModel = mongoose.model('note', notesSchema);
-module.exports = notesModel;
+export default mongoose.model<INote>('note', notesSchema);

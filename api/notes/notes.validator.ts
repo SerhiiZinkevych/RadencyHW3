@@ -1,6 +1,12 @@
+import { NextFunction, Request, Response } from 'express';
+
 const Joi = require('joi');
 
-module.exports.validateCreateNote = async (req, res, next) => {
+export const validateCreateNote = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const createUserSchema = Joi.object({
     name: Joi.string().required(),
     category: Joi.string()
@@ -17,7 +23,11 @@ module.exports.validateCreateNote = async (req, res, next) => {
   next();
 };
 
-module.exports.validateUpdateNote = async (req, res, next) => {
+export const validateUpdateNote = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const createUserSchema = Joi.object({
     name: Joi.string(),
     category: Joi.string().valid('Task', 'Random Thought', 'Idea', 'Quote'),

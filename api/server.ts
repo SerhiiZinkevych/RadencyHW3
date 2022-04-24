@@ -1,21 +1,19 @@
-const express = require('express');
-const Mongoose = require('mongoose');
-const logger = require('morgan');
-const cors = require('cors');
+import express, { Application, Request, Response } from 'express';
+import Mongoose from 'mongoose';
+import logger from 'morgan';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import notesRouter from './notes/notes.router';
 
-const notesRouter = require('./notes/notes.router');
+dotenv.config();
 
-require('dotenv').config();
-
-class Server {
+export default class Server {
+  server: Application;
   constructor() {
-    this.server = null;
-  }
-  initServer() {
     this.server = express();
   }
+
   async start() {
-    this.initServer();
     await this.initDB();
     this.initMiddleWares();
     this.initRoutes();
@@ -24,7 +22,7 @@ class Server {
 
   async initDB() {
     try {
-      await Mongoose.connect(process.env.MONGODB_URL);
+      await Mongoose.connect(process.env.MONGODB_URL || '');
       console.log('\x1b[32m%s\x1b[0m', 'Database connection successful.');
     } catch (error) {
       console.log('\x1B[31m%s\x1b[0m', 'Failed to connect to database.');
@@ -44,11 +42,11 @@ class Server {
   initRoutes() {
     this.server.use('/notes', notesRouter);
 
-    this.server.use((req, res) => {
+    this.server.use((req: Request, res: Response) => {
       res.status(404).json({ message: 'Not found' });
     });
 
-    this.server.use((err, req, res, next) => {
+    this.server.use((err: Error, req: Request, res: Response) => {
       res.status(500).json({ message: err.message });
     });
   }
@@ -64,5 +62,3 @@ class Server {
     });
   }
 }
-
-module.exports = Server;

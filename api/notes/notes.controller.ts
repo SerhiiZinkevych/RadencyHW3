@@ -1,18 +1,19 @@
-const notesModel = require('./notes.model');
-const { Types } = require('mongoose');
+import notesModel from './notes.model';
+import { Types } from 'mongoose';
+import { NextFunction, Request, Response } from 'express';
 
 class NotesController {
-  async getNotes(req, res, next) {
+  async getNotes(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = req.params.id;
-      const filter = id ? { _id: new Types.ObjectId(id) } : {};
+      const id: string = req.params.id;
+      const filter: Object = id ? { _id: new Types.ObjectId(id) } : {};
       const notes = await notesModel.find(filter);
       return res.status(200).json(notes);
     } catch (error) {
       next(error);
     }
   }
-  async getStats(req, res, next) {
+  async getStats(req: Request, res: Response, next: NextFunction) {
     try {
       const stats = await notesModel.aggregate([
         {
@@ -32,18 +33,18 @@ class NotesController {
       next(error);
     }
   }
-  async postNote(req, res, next) {
+  async postNote(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = req.body;
+      const data: Object = req.body;
       const newNote = await notesModel.create(data);
       return res.status(201).json(newNote);
     } catch (error) {
       next(error);
     }
   }
-  async deletePost(req, res, next) {
+  async deletePost(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = req.params.id;
+      const id: string = req.params.id;
       const deletedNote = await notesModel.findByIdAndDelete(id);
 
       if (!deletedNote) {
@@ -58,10 +59,10 @@ class NotesController {
       next(error);
     }
   }
-  async editPost(req, res, next) {
+  async editPost(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = req.params.id;
-      const data = req.body;
+      const id: string = req.params.id;
+      const data: Object = req.body;
       const editedNote = await notesModel.findByIdAndUpdate(id, data, {
         new: true,
       });
@@ -77,4 +78,4 @@ class NotesController {
   }
 }
 
-module.exports = new NotesController();
+export default new NotesController();
